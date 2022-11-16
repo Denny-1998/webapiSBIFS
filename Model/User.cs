@@ -1,4 +1,6 @@
-﻿namespace webapiSBIFS.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace webapiSBIFS.Model
 {
     public class User
     {
