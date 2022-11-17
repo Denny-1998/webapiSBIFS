@@ -13,7 +13,7 @@ namespace webapiSBIFS.Controllers
     public class AuthController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly string tokenSaltPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\SBIFS\\salt.txt";
+        private readonly string saltPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\SBIFS\\salt.txt";
 
         public AuthController(DataContext context)
         {
@@ -26,12 +26,15 @@ namespace webapiSBIFS.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user != null)
                 return UnprocessableEntity("Email not valid or taken.");
+            
+            string salt = new TextFile().GetAllTextFromFile(saltPath);
+            string hashedPass = SecurityTools.HashString(request.Password, salt);
 
-            user = await _context.Users.FirstOrDefaultAsync(u => u.Password == request.Password);
+            user = await _context.Users.FirstOrDefaultAsync(u => u.Password == hashedPass);
             if (user != null)
                 return UnprocessableEntity("Password not valid.");
 
-            User u = new User(request.Email, request.Password);
+            User u = new User(request.Email, hashedPass);
 
             await _context.Users.AddAsync(u);
             await _context.SaveChangesAsync();
@@ -47,7 +50,10 @@ namespace webapiSBIFS.Controllers
             if (user == null)
                 return Forbid("Wrong username or password.");
 
-            if (user.Password != request.Password)
+            string salt = new TextFile().GetAllTextFromFile(saltPath);
+            string hashedPass = SecurityTools.HashString(request.Password, salt);
+
+            if (user.Password != hashedPass)
                 return Forbid("Wrong username or password.");
 
             string token = CreateToken(user);
@@ -62,7 +68,7 @@ namespace webapiSBIFS.Controllers
                 new Claim(ClaimTypes.Role, u.Privilege.ToString())
             };
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(new TextFile().GetAllTextFromFile(tokenSaltPath)));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(new TextFile().GetAllTextFromFile(saltPath)));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
