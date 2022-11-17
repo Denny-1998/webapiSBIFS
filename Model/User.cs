@@ -14,5 +14,11 @@ namespace webapiSBIFS.Model
         public string Email { get; set; } = string.Empty;
         public Privileges Privilege { get; set; } = Privileges.user;
         public string Password { get; set; } = string.Empty;
+
+        public User(string email, string password)
+        {
+            Email = email;
+            Password = password;
+        }
     }
 }
