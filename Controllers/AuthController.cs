@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace webapiSBIFS.Controllers
 {
@@ -15,7 +18,7 @@ namespace webapiSBIFS.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<int>> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(UserDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
@@ -24,7 +27,9 @@ namespace webapiSBIFS.Controllers
             if (user.Password != request.Password)
                 return BadRequest("Wrong password.");
 
-            return Ok(user.Privilege);
+
+            string token = CreateToken(user);
+            return Ok(token);
         }
 
         [HttpPost("Register")]
@@ -43,7 +48,22 @@ namespace webapiSBIFS.Controllers
             await _context.Users.AddAsync(u);
             await _context.SaveChangesAsync();
 
-            return Ok(request);
+            string token = CreateToken(u);
+            return Ok(token);
+        } 
+
+        private string CreateToken(User u)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, u.Email),
+                new Claim(ClaimTypes.Role, u.Privilege.ToString())
+            };
+
+            //// Still needs a key, to be figured out //
+            //var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes())
+
+            return string.Empty;
         }
     }
 }
