@@ -64,7 +64,7 @@ namespace webapiSBIFS.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, u.Email),
+                new Claim(ClaimTypes.NameIdentifier, u.UserID.ToString()),
                 new Claim(ClaimTypes.Role, u.Privilege.ToString())
             };
 
