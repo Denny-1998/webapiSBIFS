@@ -7,5 +7,6 @@ namespace webapiSBIFS.Model
         public int GroupID { get; set; }
         public int OwnerID { get; set; }
         public List<User>? Participants { get; set; }
+        public List<Bill>? Bills { get; set; }
     }
 }
