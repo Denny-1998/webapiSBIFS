@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using webapiSBIFS.Tools;
 
@@ -10,10 +13,24 @@ namespace webapiSBIFS.Controllers
     public class AuthController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IUserService _userService;
 
-        public AuthController(DataContext context)
+        public AuthController(DataContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
+        }
+
+        // Test method for reading claims
+        [HttpGet, Authorize(Roles = "admin")]
+        public ActionResult<object> GetMe()
+        {
+            var userID = _userService.GetUserID();
+            return Ok(new { userID });
+
+            //var userID = User?.Identity?.Name;
+            //var userRole = User?.FindFirstValue(ClaimTypes.Role);
+            //return Ok(new {userID, userRole});
         }
 
         [HttpPost("Register")]

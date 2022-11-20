@@ -10,7 +10,7 @@ namespace webapiSBIFS.Tools
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, u.UserID.ToString()),
+                new Claim(ClaimTypes.Name, u.UserID.ToString()),
                 new Claim(ClaimTypes.Role, u.Privilege.ToString())
             };
 
