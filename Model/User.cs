@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace webapiSBIFS.Model
 {
@@ -14,6 +15,8 @@ namespace webapiSBIFS.Model
         public string Email { get; set; } = string.Empty;
         public Privileges Privilege { get; set; } = Privileges.user;
         public string Password { get; set; } = string.Empty;
+        public List<Group>? Groups { get; set; }
+        public List<Activity>? Activities { get; set; }
 
         public User(string email, string password)
         {

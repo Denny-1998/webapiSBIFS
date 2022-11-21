@@ -15,6 +15,7 @@ namespace webapiSBIFS.Controllers
             _context = context;
         }
 
-        
+        // Set authorization based on roles:
+        // [HttpGet(Name = "GetSomething"), Authorize(Roles = "Admin")]
     }
 }
