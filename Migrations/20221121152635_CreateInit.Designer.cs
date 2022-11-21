@@ -12,8 +12,8 @@ using webapiSBIFS.Model;
 namespace webapiSBIFS.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221121145453_Whoops")]
-    partial class Whoops
+    [Migration("20221121152635_CreateInit")]
+    partial class CreateInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
