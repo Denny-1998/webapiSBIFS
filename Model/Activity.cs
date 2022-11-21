@@ -1,8 +1,8 @@
 ﻿namespace webapiSBIFS.Model
 {
-    public class Bill
+    public class Activity
     {
-        public int BillID { get; set; }
+        public int ActivityID { get; set; }
         public double Amount { get; set; }
         public string Description { get; set; } = string.Empty;
         public int OwnerID { get; set; }

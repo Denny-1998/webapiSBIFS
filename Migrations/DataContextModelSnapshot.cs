@@ -22,19 +22,19 @@ namespace webapiSBIFS.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BillUser", b =>
+            modelBuilder.Entity("ActivityUser", b =>
                 {
-                    b.Property<int>("BillsBillID")
+                    b.Property<int>("ActivitiesActivityID")
                         .HasColumnType("int");
 
                     b.Property<int>("ParticipantsUserID")
                         .HasColumnType("int");
 
-                    b.HasKey("BillsBillID", "ParticipantsUserID");
+                    b.HasKey("ActivitiesActivityID", "ParticipantsUserID");
 
                     b.HasIndex("ParticipantsUserID");
 
-                    b.ToTable("BillUser");
+                    b.ToTable("ActivityUser");
                 });
 
             modelBuilder.Entity("GroupUser", b =>
@@ -52,13 +52,13 @@ namespace webapiSBIFS.Migrations
                     b.ToTable("GroupUser");
                 });
 
-            modelBuilder.Entity("webapiSBIFS.Model.Bill", b =>
+            modelBuilder.Entity("webapiSBIFS.Model.Activity", b =>
                 {
-                    b.Property<int>("BillID")
+                    b.Property<int>("ActivityID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityID"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
@@ -73,11 +73,11 @@ namespace webapiSBIFS.Migrations
                     b.Property<int>("OwnerID")
                         .HasColumnType("int");
 
-                    b.HasKey("BillID");
+                    b.HasKey("ActivityID");
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("Bill");
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.Group", b =>
@@ -120,11 +120,11 @@ namespace webapiSBIFS.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BillUser", b =>
+            modelBuilder.Entity("ActivityUser", b =>
                 {
-                    b.HasOne("webapiSBIFS.Model.Bill", null)
+                    b.HasOne("webapiSBIFS.Model.Activity", null)
                         .WithMany()
-                        .HasForeignKey("BillsBillID")
+                        .HasForeignKey("ActivitiesActivityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -150,10 +150,10 @@ namespace webapiSBIFS.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("webapiSBIFS.Model.Bill", b =>
+            modelBuilder.Entity("webapiSBIFS.Model.Activity", b =>
                 {
                     b.HasOne("webapiSBIFS.Model.Group", "Group")
-                        .WithMany("Bills")
+                        .WithMany("Activities")
                         .HasForeignKey("GroupID");
 
                     b.Navigation("Group");
@@ -161,7 +161,7 @@ namespace webapiSBIFS.Migrations
 
             modelBuilder.Entity("webapiSBIFS.Model.Group", b =>
                 {
-                    b.Navigation("Bills");
+                    b.Navigation("Activities");
                 });
 #pragma warning restore 612, 618
         }

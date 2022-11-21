@@ -5,7 +5,7 @@
 namespace webapiSBIFS.Migrations
 {
     /// <inheritdoc />
-    public partial class UserGroupRelations : Migration
+    public partial class UserGroupActivityRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,27 @@ namespace webapiSBIFS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Activity",
+                columns: table => new
+                {
+                    ActivityID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerID = table.Column<int>(type: "int", nullable: false),
+                    GroupID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activity", x => x.ActivityID);
+                    table.ForeignKey(
+                        name: "FK_Activity_Group_GroupID",
+                        column: x => x.GroupID,
+                        principalTable: "Group",
+                        principalColumn: "GroupID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupUser",
                 columns: table => new
                 {
@@ -62,6 +83,40 @@ namespace webapiSBIFS.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ActivityUser",
+                columns: table => new
+                {
+                    ActivitiesActivityID = table.Column<int>(type: "int", nullable: false),
+                    ParticipantsUserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivityUser", x => new { x.ActivitiesActivityID, x.ParticipantsUserID });
+                    table.ForeignKey(
+                        name: "FK_ActivityUser_Activity_ActivitiesActivityID",
+                        column: x => x.ActivitiesActivityID,
+                        principalTable: "Activity",
+                        principalColumn: "ActivityID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ActivityUser_Users_ParticipantsUserID",
+                        column: x => x.ParticipantsUserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activity_GroupID",
+                table: "Activity",
+                column: "GroupID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityUser_ParticipantsUserID",
+                table: "ActivityUser",
+                column: "ParticipantsUserID");
+
             migrationBuilder.CreateIndex(
                 name: "IX_GroupUser_ParticipantsUserID",
                 table: "GroupUser",
@@ -72,13 +127,19 @@ namespace webapiSBIFS.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ActivityUser");
+
+            migrationBuilder.DropTable(
                 name: "GroupUser");
 
             migrationBuilder.DropTable(
-                name: "Group");
+                name: "Activity");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Group");
         }
     }
 }
