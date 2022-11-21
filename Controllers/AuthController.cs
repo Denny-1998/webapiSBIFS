@@ -57,7 +57,7 @@ namespace webapiSBIFS.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<object>> Login(UserDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
@@ -69,8 +69,8 @@ namespace webapiSBIFS.Controllers
             if (user.Password != hashedPass)
                 return Forbid("Wrong username or password.");
 
-            string token = JwtTools.CreateToken(user);
-            return Ok(token);
+            var jwt = JwtTools.CreateToken(user);
+            return Ok(new {jwt});
         }
     }
 }
