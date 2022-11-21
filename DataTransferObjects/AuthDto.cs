@@ -1,4 +1,4 @@
-﻿namespace webapiSBIFS.Model
+﻿namespace webapiSBIFS.DataTransferObjects
 {
     public class AuthDto
     {

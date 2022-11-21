@@ -34,7 +34,7 @@ namespace webapiSBIFS.Controllers
         }
 
         [HttpPut("Update"), Authorize(Roles = "admin, user")]
-        public async Task<ActionResult> Update(UserDto request)
+        public async Task<ActionResult> Update(AuthDto request)
         {
             string hashedPass = string.Empty;
             int userID = _userService.GetUserID();
