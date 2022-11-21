@@ -77,7 +77,7 @@ namespace webapiSBIFS.Migrations
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.Group", b =>
@@ -93,7 +93,7 @@ namespace webapiSBIFS.Migrations
 
                     b.HasKey("GroupID");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.User", b =>

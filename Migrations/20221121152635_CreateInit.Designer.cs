@@ -12,8 +12,8 @@ using webapiSBIFS.Model;
 namespace webapiSBIFS.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221121113339_UserGroupActivityRelations")]
-    partial class UserGroupActivityRelations
+    [Migration("20221121152635_CreateInit")]
+    partial class CreateInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,7 +80,7 @@ namespace webapiSBIFS.Migrations
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.Group", b =>
@@ -96,7 +96,7 @@ namespace webapiSBIFS.Migrations
 
                     b.HasKey("GroupID");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.User", b =>

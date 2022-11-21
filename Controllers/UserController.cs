@@ -19,7 +19,7 @@ namespace webapiSBIFS.Controllers
             _userService = userService;
         }
 
-        [HttpGet(Name = "Read"), Authorize(Roles = "user")]
+        [HttpGet("Read"), Authorize(Roles = "user")]
         public async Task<ActionResult<object>> Get()
         {
             var userID = _userService.GetUserID();
@@ -33,7 +33,7 @@ namespace webapiSBIFS.Controllers
             return Ok(new { email });
         }
 
-        [HttpPut(Name = "Update"), Authorize(Roles = "user")]
+        [HttpPut("Update"), Authorize(Roles = "user")]
         public async Task<ActionResult> Update(UserDto request)
         {
             string hashedPass = string.Empty;

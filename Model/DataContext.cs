@@ -7,5 +7,7 @@ namespace webapiSBIFS.Model
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<Activity> Activities { get; set; }
     }
 }
