@@ -34,7 +34,7 @@ namespace webapiSBIFS.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult> Register(UserDto request)
+        public async Task<ActionResult> Register(AuthDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user != null)
@@ -57,7 +57,7 @@ namespace webapiSBIFS.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<object>> Login(UserDto request)
+        public async Task<ActionResult<object>> Login(AuthDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
