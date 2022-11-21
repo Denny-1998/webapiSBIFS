@@ -55,5 +55,19 @@ namespace webapiSBIFS.Controllers
 
             return new ObjectResult(groups) { StatusCode = StatusCodes.Status201Created };
         }
+
+        [HttpDelete("Delete"), Authorize(Roles = "user")]
+        public async Task<ActionResult> Delete(GroupDto requested) 
+        {
+            int userID = _userService.GetUserID();
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == requested.GroupID && g.OwnerID == userID);
+            if (group == null)
+                return BadRequest("No such group.");
+
+            _context.Groups.Remove(group);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
