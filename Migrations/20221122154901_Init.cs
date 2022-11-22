@@ -46,7 +46,7 @@ namespace webapiSBIFS.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerID = table.Column<int>(type: "int", nullable: true),
+                    OwnerID = table.Column<int>(type: "int", nullable: false),
                     GroupID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

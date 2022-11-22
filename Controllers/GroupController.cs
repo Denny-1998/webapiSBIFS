@@ -23,7 +23,11 @@ namespace webapiSBIFS.Controllers
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
             int userID = _userService.GetUserID();
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == requested.GroupID && g.OwnerID == userID);
+            var group = await _context.Groups
+                .Where(g => g.GroupID == requested.GroupID)
+                .Include(g => g.Participants)
+                .Include(g => g.Activities)
+                .FirstAsync();
             if (group == null)
                 return BadRequest("No such group.");
 
@@ -35,7 +39,11 @@ namespace webapiSBIFS.Controllers
         {
             int userID = _userService.GetUserID();
             // Necessity for a group name which is returned instead? 
-            List<Group> groups = await _context.Groups.Where(g => g.OwnerID == userID).ToListAsync();
+            List<Group> groups = await _context.Groups
+                .Where(g => g.OwnerID == userID)
+                .Include(g => g.Participants)
+                .Include(g => g.Activities)
+                .ToListAsync();
             return Ok(groups);
         }
 
@@ -43,11 +51,17 @@ namespace webapiSBIFS.Controllers
         public async Task<ActionResult<List<Group>>> Create()
         {
             int userID = _userService.GetUserID();
+            var user = await _context.Users.FindAsync(userID);
+            if (user == null)
+                return BadRequest("No such user.");
 
-            Group g = new Group();
-            g.OwnerID = userID;
+            Group group = new Group();
+            user.Groups.Add(group);
+            group.Participants.Add(user);
+            group.OwnerID = userID;
 
-            await _context.Groups.AddAsync(g);
+            await _context.Groups.AddAsync(group);
+            
             await _context.SaveChangesAsync();
 
             // Necessity for a group name which is returned instead? 

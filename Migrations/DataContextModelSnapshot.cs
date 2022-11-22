@@ -70,7 +70,7 @@ namespace webapiSBIFS.Migrations
                     b.Property<int>("GroupID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerID")
+                    b.Property<int>("OwnerID")
                         .HasColumnType("int");
 
                     b.HasKey("ActivityID");

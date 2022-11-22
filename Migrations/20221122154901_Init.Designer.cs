@@ -12,7 +12,7 @@ using webapiSBIFS.Model;
 namespace webapiSBIFS.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221121230400_Init")]
+    [Migration("20221122154901_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -73,7 +73,7 @@ namespace webapiSBIFS.Migrations
                     b.Property<int>("GroupID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerID")
+                    b.Property<int>("OwnerID")
                         .HasColumnType("int");
 
                     b.HasKey("ActivityID");
