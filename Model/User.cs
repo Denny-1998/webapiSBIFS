@@ -15,8 +15,8 @@ namespace webapiSBIFS.Model
         public string Email { get; set; } = string.Empty;
         public Privileges Privilege { get; set; } = Privileges.user;
         public string Password { get; set; } = string.Empty;
-        public List<Group>? Groups { get; set; }
-        public List<Activity>? Activities { get; set; }
+        public List<Group> Groups { get; set; } = new List<Group>();
+        public List<Activity> Activities { get; set; } = new List<Activity>();
 
         public User(string email, string password)
         {

@@ -67,7 +67,7 @@ namespace webapiSBIFS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("GroupID")
+                    b.Property<int>("GroupID")
                         .HasColumnType("int");
 
                     b.Property<int>("OwnerID")
@@ -77,7 +77,7 @@ namespace webapiSBIFS.Migrations
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.Group", b =>
@@ -88,12 +88,12 @@ namespace webapiSBIFS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupID"));
 
-                    b.Property<int>("OwnerID")
+                    b.Property<int?>("OwnerID")
                         .HasColumnType("int");
 
                     b.HasKey("GroupID");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("webapiSBIFS.Model.User", b =>
@@ -154,7 +154,9 @@ namespace webapiSBIFS.Migrations
                 {
                     b.HasOne("webapiSBIFS.Model.Group", "Group")
                         .WithMany("Activities")
-                        .HasForeignKey("GroupID");
+                        .HasForeignKey("GroupID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
                 });
