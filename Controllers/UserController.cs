@@ -63,5 +63,26 @@ namespace webapiSBIFS.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete("Delete"), Authorize(Roles = "admin, user")]
+        public async Task<ActionResult> Delete()
+        {
+            int userID = _userService.GetUserID();
+            var user = await _context.Users.FindAsync(userID);
+            if (user == null)
+                return BadRequest("No such user.");
+
+            List<Group> groups = await _context.Groups.Where(g => g.OwnerID == userID).ToListAsync();
+
+            foreach (Group group in groups)
+            {
+                _context.Groups.Remove(group);
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

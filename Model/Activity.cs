@@ -6,7 +6,7 @@
         public double Amount { get; set; }
         public string Description { get; set; } = string.Empty;
         public int OwnerID { get; set; }
-        public List<User>? Participants { get; set; }
-        public Group? Group { get; set; }
+        public List<User> Participants { get; set; } = new List<User>(); 
+        public Group Group { get; set; }
     }
 }

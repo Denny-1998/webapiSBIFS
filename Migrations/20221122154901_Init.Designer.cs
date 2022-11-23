@@ -12,8 +12,8 @@ using webapiSBIFS.Model;
 namespace webapiSBIFS.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221121152635_CreateInit")]
-    partial class CreateInit
+    [Migration("20221122154901_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace webapiSBIFS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("GroupID")
+                    b.Property<int>("GroupID")
                         .HasColumnType("int");
 
                     b.Property<int>("OwnerID")
@@ -91,7 +91,7 @@ namespace webapiSBIFS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupID"));
 
-                    b.Property<int>("OwnerID")
+                    b.Property<int?>("OwnerID")
                         .HasColumnType("int");
 
                     b.HasKey("GroupID");
@@ -157,7 +157,9 @@ namespace webapiSBIFS.Migrations
                 {
                     b.HasOne("webapiSBIFS.Model.Group", "Group")
                         .WithMany("Activities")
-                        .HasForeignKey("GroupID");
+                        .HasForeignKey("GroupID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
                 });

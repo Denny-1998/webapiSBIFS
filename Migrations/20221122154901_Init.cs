@@ -5,7 +5,7 @@
 namespace webapiSBIFS.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInit : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace webapiSBIFS.Migrations
                 {
                     GroupID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerID = table.Column<int>(type: "int", nullable: false)
+                    OwnerID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,7 +47,7 @@ namespace webapiSBIFS.Migrations
                     Amount = table.Column<double>(type: "float", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OwnerID = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: true)
+                    GroupID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,8 @@ namespace webapiSBIFS.Migrations
                         name: "FK_Activities_Groups_GroupID",
                         column: x => x.GroupID,
                         principalTable: "Groups",
-                        principalColumn: "GroupID");
+                        principalColumn: "GroupID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
