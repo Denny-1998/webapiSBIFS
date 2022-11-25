@@ -59,15 +59,16 @@ namespace webapiSBIFS.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<object>> Login(AuthDto request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
-                return Forbid("Wrong username or password.");
+                return Forbid("Wrong username.");
 
             string salt = new SaltAdapter().GetSalt();
             string hashedPass = SecurityTools.HashString(request.Password, salt);
 
             if (user.Password != hashedPass)
-                return Forbid("Wrong username or password.");
+                return Forbid("Wrong password.");
+
 
             var jwt = JwtTools.CreateToken(user);
             return Ok(new {jwt});
