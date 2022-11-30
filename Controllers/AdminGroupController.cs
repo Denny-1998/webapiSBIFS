@@ -88,7 +88,7 @@ namespace webapiSBIFS.Controllers
 
             //error handling (might need more)
             if (groupToEdit == null)
-                return BadRequest("no group found");
+                return BadRequest("No such group");
             if (request.OwnerID == null && request.Participants == null && request.Activities == null)
                 return BadRequest("no input given");
 

@@ -61,13 +61,13 @@ namespace webapiSBIFS.Controllers
         {
             User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
-                return Forbid("Wrong username.");
+                return StatusCode(403, "User name does not exist. ");
 
             string salt = new SaltAdapter().GetSalt();
             string hashedPass = SecurityTools.HashString(request.Password, salt);
 
             if (user.Password != hashedPass)
-                return Forbid("Wrong password.");
+                return StatusCode(403, "Wrong password.");
 
 
             var jwt = JwtTools.CreateToken(user);
