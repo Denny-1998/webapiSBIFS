@@ -19,7 +19,7 @@ namespace webapiSBIFS.Controllers
             _userService = userService;
         }
 
-        [HttpGet("ReadOne"), Authorize(Roles = "user")]
+        [HttpPost("ReadOne"), Authorize(Roles = "user")]                                             //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
             int userID = _userService.GetUserID();
