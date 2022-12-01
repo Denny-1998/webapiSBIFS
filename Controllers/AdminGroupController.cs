@@ -29,7 +29,7 @@ namespace webapiSBIFS.Controllers
 
 
         #region http methods
-        [HttpGet("ReadOne"), Authorize(Roles = "admin")]
+        [HttpPost("ReadOne"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
             var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
@@ -42,8 +42,8 @@ namespace webapiSBIFS.Controllers
 
 
 
-
-        [HttpGet("ReadMany"), Authorize(Roles = "admin")]
+        
+        [HttpPost("ReadMany"), Authorize(Roles = "admin")]                                              //TODO change to get later 
         public async Task<ActionResult<List<Group>>> Get(UserDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);

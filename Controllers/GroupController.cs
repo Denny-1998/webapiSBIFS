@@ -34,7 +34,7 @@ namespace webapiSBIFS.Controllers
             return Ok(group);
         }
 
-        [HttpGet("ReadMany"), Authorize(Roles = "user")]
+        [HttpPost("ReadMany"), Authorize(Roles = "user")]                                           //TODO change to get later
         public async Task<ActionResult<List<Group>>> Get()
         {
             int userID = _userService.GetUserID();
