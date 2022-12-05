@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -29,6 +30,36 @@ namespace webapiSBIFS.Controllers
 
 
         #region http methods
+
+        [HttpPost("AddUser"), Authorize(Roles = "user")]
+        public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
+        {
+
+            //find group in db
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (group == null) 
+                return BadRequest("No such group.");
+
+
+            //find user in db
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("User does not exist. ");
+
+
+            //add user to group
+            group.Participants.Add(user);
+            _context.SaveChangesAsync();
+
+            //double check
+            var confirmGroup = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+            return Ok(confirmGroup);
+        }
+
+
+
         [HttpPost("ReadOne"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
@@ -53,6 +84,7 @@ namespace webapiSBIFS.Controllers
             var groups = await _context.Groups.Where(g => g.OwnerID == user.UserID).ToListAsync();
             return Ok(groups);
         }
+
 
 
 
