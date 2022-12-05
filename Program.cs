@@ -18,7 +18,14 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Database and salt setup ensurance
-string conString = "Data Source=" + Environment.MachineName + ";Initial Catalog=dbSBIFS;Integrated Security=True;TrustServerCertificate=True";
+
+string conString0 = builder.Configuration.GetConnectionString("DefaultConnection");
+//string conString1 = "Data Source=" + Environment.MachineName + ";Initial Catalog=dbSBIFS;Integrated Security=True;TrustServerCertificate=True";
+//string conString2 = "Server=sql.dennym.de;Database=dbSBIFS;User Id=sa;Password=Baum876543; TrustServerCertificate=True";
+//string conString3 = "Server=sql.dennym.de;Initial Catalog=dbSBIFS;Persist Security Info=False;User  ID=sa;Password=Baum876543; MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
+
+
+
 FileAdapter fileTxt = new TextFile();
 string configPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Documents\\SBIFS";
 
@@ -35,7 +42,7 @@ if (!File.Exists(saltPath))
 // Add DB Context
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(conString);
+    options.UseSqlServer(conString0);
 });
 
 // UserService service
@@ -67,8 +74,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+//app.UseDefaultFiles();
+//app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

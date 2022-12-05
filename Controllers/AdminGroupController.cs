@@ -11,16 +11,25 @@ namespace webapiSBIFS.Controllers
     [ApiController]
     public class AdminGroupController : ControllerBase
     {
+
+        #region values and constructors 
         private readonly DataContext _context;
         private readonly IUserService _userService;
+
+
 
         public AdminGroupController(DataContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
         }
+        #endregion
 
-        [HttpGet("ReadOne"), Authorize(Roles = "admin")]
+
+
+
+        #region http methods
+        [HttpPost("ReadOne"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
             var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
@@ -30,7 +39,11 @@ namespace webapiSBIFS.Controllers
             return Ok(group);
         }
 
-        [HttpGet("ReadMany"), Authorize(Roles = "admin")]
+
+
+
+        
+        [HttpPost("ReadMany"), Authorize(Roles = "admin")]                                              //TODO change to get later 
         public async Task<ActionResult<List<Group>>> Get(UserDto request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -40,6 +53,10 @@ namespace webapiSBIFS.Controllers
             var groups = await _context.Groups.Where(g => g.OwnerID == user.UserID).ToListAsync();
             return Ok(groups);
         }
+
+
+
+
 
         [HttpPost("Create"), Authorize(Roles = "admin")]
         public async Task<ActionResult<List<Group>>> Create(UserDto request)
@@ -60,6 +77,43 @@ namespace webapiSBIFS.Controllers
             return new ObjectResult(groups) { StatusCode = StatusCodes.Status201Created };
         }
 
+
+        
+
+        [HttpPut("Edit"), Authorize(Roles ="admin")]
+        public async Task<ActionResult<List<Group>>> Edit(GroupFullDto request)
+        {
+            Group groupToEdit = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+
+            //error handling (might need more)
+            if (groupToEdit == null)
+                return BadRequest("No such group");
+            if (request.OwnerID == null && request.Participants == null && request.Activities == null)
+                return BadRequest("no input given");
+
+
+            //change given values
+            if (request.OwnerID != null) 
+                groupToEdit.OwnerID = request.OwnerID;
+            if (request.Participants != null) 
+                groupToEdit.Participants = request.Participants;
+            if (request.Activities != null) 
+                groupToEdit.Activities = request.Activities;
+
+
+            //save changes 
+            _context.SaveChangesAsync();
+
+            //check if changes are applied
+            List<Group> groups = await _context.Groups.Where(g => g.GroupID == request.GroupID).ToListAsync();
+
+            return new ObjectResult(groups) { StatusCode = StatusCodes.Status200OK};
+        }
+
+        
+
+
         [HttpDelete("Delete"), Authorize(Roles = "admin")]
         public async Task<ActionResult> Delete(GroupDto request)
         {
@@ -72,5 +126,7 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+        #endregion
     }
 }

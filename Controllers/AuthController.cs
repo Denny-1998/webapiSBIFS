@@ -15,11 +15,17 @@ namespace webapiSBIFS.Controllers
         private readonly DataContext _context;
         private readonly IUserService _userService;
 
+
         public AuthController(DataContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
         }
+
+
+
+
+
 
         // Test method for reading claims
         [HttpGet, Authorize(Roles = "admin")]
@@ -32,6 +38,10 @@ namespace webapiSBIFS.Controllers
             //var userRole = User?.FindFirstValue(ClaimTypes.Role);
             //return Ok(new {userID, userRole});
         }
+
+
+
+
 
         [HttpPost("Register")]
         public async Task<ActionResult> Register(AuthDto request)
@@ -56,18 +66,24 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
+
+
+
+
+
         [HttpPost("Login")]
         public async Task<ActionResult<object>> Login(AuthDto request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
-                return Forbid("Wrong username or password.");
+                return StatusCode(401, "User name does not exist. ");
 
             string salt = new SaltAdapter().GetSalt();
             string hashedPass = SecurityTools.HashString(request.Password, salt);
 
             if (user.Password != hashedPass)
-                return Forbid("Wrong username or password.");
+                return StatusCode(401, "Wrong password.");
+
 
             var jwt = JwtTools.CreateToken(user);
             return Ok(new {jwt});
