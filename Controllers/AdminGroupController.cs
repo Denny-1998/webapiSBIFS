@@ -157,14 +157,13 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
-        /*
+        
 
-        //not working for now
-        [HttpDelete("RemoveUserFromGroup")]
+        [HttpDelete("RemoveUserFromGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> RemoveUserFromGroup(GroupUserDto request)
         {
             //find group in db
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+            var group = await _context.Groups.Include(g => g.Participants).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
 
             if (group == null)
                 return BadRequest("No such group.");
@@ -176,29 +175,16 @@ namespace webapiSBIFS.Controllers
             if (user == null)
                 return BadRequest("User does not exist. ");
 
-            //remove user from group
-            var grouptoedit = _context.Groups.Include(p => p.Participants).SingleOrDefault(u => u.Participants == user.UserID);
+            //check if úser is participant in the given group
+            if (!group.Participants.Contains(user))
+                return BadRequest("user is not participant of this group. ");
 
-            if (artist != null)
-            {
-                foreach (var artistType in artist.ArtistTypes
-                    .Where(at => vm.SelectedIds.Contains(at.ArtistTypeID)).ToList())
-                {
-                    artist.ArtistTypes.Remove(artistType);
-                }
-                this._db.SaveChanges();
-            }
+            //remove user from group
+            group.Participants.Remove(user);
             _context.SaveChangesAsync();
 
-
-            return StatusCode(501, "not implemented");
+            return Ok();
         }
-        */
-
-
-
-
-
         #endregion
     }
 }
