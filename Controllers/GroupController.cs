@@ -88,5 +88,37 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("AddUser"), Authorize(Roles = "user")]
+        public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
+        {
+
+
+            //find group in db
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+            
+            //check if user is owner of the given group
+            if (group.OwnerID != _userService.GetUserID())
+                return Forbid();
+
+            
+            //check if group exists
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            //find user in db
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("User does not exist. ");
+
+
+            //add user to group
+            group.Participants.Add(user);
+            _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }

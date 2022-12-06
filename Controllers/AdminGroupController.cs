@@ -31,7 +31,7 @@ namespace webapiSBIFS.Controllers
 
         #region http methods
 
-        [HttpPost("AddUser"), Authorize(Roles = "user")]
+        [HttpPost("AddUser"), Authorize(Roles = "admin")]
         public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
         {
 
@@ -53,9 +53,7 @@ namespace webapiSBIFS.Controllers
             group.Participants.Add(user);
             _context.SaveChangesAsync();
 
-            //double check
-            var confirmGroup = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
-            return Ok(confirmGroup);
+            return Ok();
         }
 
 
@@ -158,6 +156,8 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+
 
         #endregion
     }
