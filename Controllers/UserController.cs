@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using webapiSBIFS.DataTransferObjects;
 using webapiSBIFS.Model;
 using webapiSBIFS.Tools;
 

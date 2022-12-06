@@ -159,6 +159,45 @@ namespace webapiSBIFS.Controllers
 
 
 
+        //not working for now
+        [HttpDelete("RemoveUserFromGroup")]
+        public async Task<ActionResult> RemoveUserFromGroup(GroupUserDto request)
+        {
+            //find group in db
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            //find user in db
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("User does not exist. ");
+
+            //remove user from group
+
+
+            _context.SaveChangesAsync();
+
+
+            return StatusCode(500, "not implemented");
+        }
+
+
+
+
+
+        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
+        public async Task<ActionResult> CountUsers()
+        {
+            int count = await _context.Users.CountAsync();
+
+            return Ok(new {count});
+        }
+
+
         #endregion
     }
 }

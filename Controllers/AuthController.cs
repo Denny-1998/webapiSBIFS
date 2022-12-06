@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using webapiSBIFS.DataTransferObjects;
 using webapiSBIFS.Tools;
 using static webapiSBIFS.Model.User;
 
