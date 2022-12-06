@@ -85,5 +85,16 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+
+
+        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
+        public async Task<ActionResult> CountUsers()
+        {
+            int count = await _context.Users.CountAsync();
+
+            return Ok(new { count });
+        }
+
     }
 }

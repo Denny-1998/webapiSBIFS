@@ -157,7 +157,7 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
-
+        /*
 
         //not working for now
         [HttpDelete("RemoveUserFromGroup")]
@@ -177,25 +177,26 @@ namespace webapiSBIFS.Controllers
                 return BadRequest("User does not exist. ");
 
             //remove user from group
+            var grouptoedit = _context.Groups.Include(p => p.Participants).SingleOrDefault(u => u.Participants == user.UserID);
 
-
+            if (artist != null)
+            {
+                foreach (var artistType in artist.ArtistTypes
+                    .Where(at => vm.SelectedIds.Contains(at.ArtistTypeID)).ToList())
+                {
+                    artist.ArtistTypes.Remove(artistType);
+                }
+                this._db.SaveChanges();
+            }
             _context.SaveChangesAsync();
 
 
-            return StatusCode(500, "not implemented");
+            return StatusCode(501, "not implemented");
         }
+        */
 
 
 
-
-
-        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
-        public async Task<ActionResult> CountUsers()
-        {
-            int count = await _context.Users.CountAsync();
-
-            return Ok(new {count});
-        }
 
 
         #endregion
