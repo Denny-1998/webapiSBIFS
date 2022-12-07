@@ -61,7 +61,7 @@ namespace webapiSBIFS.Controllers
         [HttpPost("ReadOne"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
+            var group = await _context.Groups.Include(g => g.Participants).FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
             if (group == null)
                 return BadRequest("No such group.");
 
