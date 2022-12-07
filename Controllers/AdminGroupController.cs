@@ -185,6 +185,57 @@ namespace webapiSBIFS.Controllers
 
             return Ok();
         }
+
+
+        [HttpPost("AddActivity"), Authorize(Roles = "admin")]
+        public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDto request)
+        {
+
+            //find group in db
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            //find user in db
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.OwnerEmail);
+
+            if (user == null)
+                return BadRequest("User does not exist. ");
+
+
+            //set all parameters
+            Activity activity = new Activity();
+            activity.Amount = request.Amount;
+            activity.Description = request.Description;
+            activity.OwnerID = user.UserID;
+            activity.Participants = new List<User>();
+            activity.Group = group;
+
+            //find all users in list
+            List<string> UserNotFound = new List<string>();
+            foreach (string email in request.ParticipantsEmail)
+            { 
+                var findUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                
+                if (findUser != null)
+                    activity.Participants.Add(findUser);
+                else
+                    UserNotFound.Add(email);
+            }
+
+            if (UserNotFound.Count() > 0)
+                return BadRequest(new { UserNotFound });
+
+            //add user to group
+            group.Activities.Add(activity);
+            _context.SaveChangesAsync();
+
+            return Ok(group);
+        }
+
+
         #endregion
     }
 }
