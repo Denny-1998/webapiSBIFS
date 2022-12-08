@@ -69,13 +69,37 @@ namespace webapiSBIFS.Controllers
                 return BadRequest("No such group.");
 
 
-            List<Activity> activities = group.Activities;
+            List<ActivityFullDto> activities = new List<ActivityFullDto>();
 
-            //leave out group information to make it more readble
-            foreach (Activity a in activities)
+            foreach (Activity a in group.Activities)
             {
-                a.Group = null;
+                ActivityFullDto aDto = new ActivityFullDto();
+
+                //set parameters
+                aDto.ActivityID = a.ActivityID;
+                aDto.Amount = a.Amount;
+                aDto.Description = a.Description;
+                aDto.OwnerID = a.OwnerID;
+
+                //convert loop to make it more readable
+                List<string> ParticipantsEmail = new List<string>(); 
+                foreach (User u in a.Participants)
+                {
+                    ParticipantsEmail.Add(u.Email);
+                }
+                aDto.ParticipantsEmail = ParticipantsEmail;
+
+                //get group
+                aDto.GroupID = group.GroupID;
+
+                //add to new list 
+                activities.Add(aDto);
             }
+
+
+
+
+            
 
             return Ok(activities);
         }
@@ -301,6 +325,48 @@ namespace webapiSBIFS.Controllers
 
             return Ok(group);
         }
+
+
+
+        [HttpPut("EditActivity"), Authorize(Roles = "admin")]
+        public async Task<ActionResult> EditActivity(ActivityFullDto request)
+        {
+
+            //find activity in db
+            Activity activity = await _context.Activities.Include(a => a.Participants).FirstOrDefaultAsync(a => a.ActivityID == request.ActivityID);
+            Task<Group> getGroup = _context.Groups.Include(g => g.Participants).Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+
+            if (activity == null) 
+                return BadRequest("Activity not found. ");
+
+
+            Group group = getGroup.Result;
+
+            //convert user into string to avoid sending uneccessary information
+            List<User> Participants = new List<User>();
+            foreach (string email in request.ParticipantsEmail)
+            {
+                User u = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                Participants.Add(u);
+            }
+
+
+            
+
+            //set all parameters
+            activity.Amount = request.Amount;
+            activity.Description = request.Description;
+            activity.OwnerID = request.OwnerID;
+            activity.Participants = Participants;
+            activity.Group = group;
+
+
+            _context.SaveChangesAsync();
+
+            return Ok(activity);
+        }
+
 
 
 
