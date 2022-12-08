@@ -31,37 +31,13 @@ namespace webapiSBIFS.Controllers
 
         #region http methods
 
-        [HttpPost("AddUser"), Authorize(Roles = "admin")]
-        public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
-        {
-
-            //find group in db
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
-
-            if (group == null) 
-                return BadRequest("No such group.");
-
-
-            //find user in db
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-
-            if (user == null)
-                return BadRequest("User does not exist. ");
-
-
-            //add user to group
-            group.Participants.Add(user);
-            _context.SaveChangesAsync();
-
-            return Ok();
-        }
 
 
 
         [HttpPost("ReadOne"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
-            var group = await _context.Groups.Include(g => g.Participants).FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
+            var group = await _context.Groups.Include(g => g.Participants).Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
             if (group == null)
                 return BadRequest("No such group.");
 
@@ -82,6 +58,56 @@ namespace webapiSBIFS.Controllers
             var groups = await _context.Groups.Where(g => g.OwnerID == user.UserID).ToListAsync();
             return Ok(groups);
         }
+
+
+
+        [HttpPost("GetActivities"), Authorize(Roles = "admin")]                                               //TODO change to get later
+        public async Task<ActionResult<Group>> GetActivities(GroupDto requested)
+        {
+            var group = await _context.Groups.Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            List<Activity> activities = group.Activities;
+
+            //leave out group information to make it more readble
+            foreach (Activity a in activities)
+            {
+                a.Group = null;
+            }
+
+            return Ok(activities);
+        }
+
+
+
+        [HttpPost("GetParticipants"), Authorize(Roles = "admin")]                                               //TODO change to get later
+        public async Task<ActionResult<Group>> GetParticipants(GroupDto requested)
+        {
+            var group = await _context.Groups.Include(g => g.Participants).FirstOrDefaultAsync(g => g.GroupID == requested.GroupID);
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            //convert to userDto to make it more readable and leave out uneccessary information
+            List<UserDto> participants = new List<UserDto>(); 
+
+            foreach (User u in group.Participants)
+            {
+                UserDto uDto = new UserDto();
+                uDto.Email = u.Email;
+                
+                participants.Add(uDto);
+            }
+
+
+            return Ok(participants);
+        }
+
+
+
+
 
 
 
@@ -157,7 +183,41 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
-        
+
+
+
+
+
+
+
+
+
+
+        [HttpPost("AddUser"), Authorize(Roles = "admin")]
+        public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
+        {
+
+            //find group in db
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+            //find user in db
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return BadRequest("User does not exist. ");
+
+
+            //add user to group
+            group.Participants.Add(user);
+            _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
 
         [HttpDelete("RemoveUserFromGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> RemoveUserFromGroup(GroupUserDto request)
@@ -185,6 +245,13 @@ namespace webapiSBIFS.Controllers
 
             return Ok();
         }
+
+
+
+
+
+
+
 
 
         [HttpPost("AddActivity"), Authorize(Roles = "admin")]
@@ -233,6 +300,40 @@ namespace webapiSBIFS.Controllers
             _context.SaveChangesAsync();
 
             return Ok(group);
+        }
+
+
+
+        [HttpDelete("DeleteActivity"), Authorize(Roles = "admin")]
+        public async Task<ActionResult> DeleteActivity(ActivityDto request)
+        {
+            //find group in db
+            var group = await _context.Groups.Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (group == null)
+                return BadRequest("No such group.");
+
+
+
+            //find activity in list
+            Activity activityToDelete = null;
+
+            foreach (Activity a in group.Activities)
+            {
+                if (a.ActivityID == request.ActivityID)
+                    activityToDelete = a;
+            }
+
+            //check if activity could be found
+            if (activityToDelete == null)
+                return BadRequest("No activity found. ");
+            
+
+            //remove activity from group
+            group.Activities.Remove(activityToDelete);
+            _context.SaveChangesAsync();
+
+            return Ok();
         }
 
 
