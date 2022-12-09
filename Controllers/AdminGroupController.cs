@@ -283,7 +283,7 @@ namespace webapiSBIFS.Controllers
         {
 
             //find group in db
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+            var group = await _context.Groups.Include(g => g.Participants).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
 
             if (group == null)
                 return BadRequest("No such group.");
@@ -294,6 +294,21 @@ namespace webapiSBIFS.Controllers
 
             if (user == null)
                 return BadRequest("User does not exist. ");
+
+            //check if user is part of this group to avoid errors 
+            /*
+            foreach (string u in request.ParticipantsEmail)
+            {
+                if (u != )
+            }
+            */
+
+
+
+
+            if (!group.Participants.Contains(user))
+                return BadRequest("User is not member of this group. ");
+
 
 
             //set all parameters
