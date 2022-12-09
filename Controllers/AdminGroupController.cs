@@ -295,19 +295,28 @@ namespace webapiSBIFS.Controllers
             if (user == null)
                 return BadRequest("User does not exist. ");
 
-            //check if user is part of this group to avoid errors 
-            /*
+            //for each user in request, check if it is in group
             foreach (string u in request.ParticipantsEmail)
             {
-                if (u != )
+                //check if user is in group
+                bool userInGroup = false;
+                foreach (User groupParticipants in group.Participants)
+                {
+                    if (u == groupParticipants.Email) 
+                        userInGroup = true;
+                }
+
+                //if not, return
+                if (userInGroup)
+                    return BadRequest($"At least one of the users is not participant of this group: \n{u}");
             }
-            */
+            
 
 
 
-
+            //check if group contains desired ActivityOwner
             if (!group.Participants.Contains(user))
-                return BadRequest("User is not member of this group. ");
+                return BadRequest("Desired owner is not participant of this group. ");
 
 
 
