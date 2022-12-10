@@ -144,6 +144,8 @@ namespace webapiSBIFS.Controllers
             return new ObjectResult(groups) { StatusCode = StatusCodes.Status201Created };
         }
 
+
+
         [HttpDelete("Delete"), Authorize(Roles = "user")]
         public async Task<ActionResult> Delete(GroupDto requested) 
         {
@@ -157,6 +159,9 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+
+
 
         [HttpPost("AddUser"), Authorize(Roles = "user")]
         public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
@@ -285,6 +290,33 @@ namespace webapiSBIFS.Controllers
 
 
 
+
+
+        [HttpDelete("DeleteActivity"), Authorize(Roles = "user")]
+        public async Task<ActionResult> DeleteActivity(ActivityDto request)
+        {
+            int userID = _userService.GetUserID();
+
+            //find activity in db and check if user is owner of it
+            var activity = await _context.Activities.Include(a => a.Participants)
+                .FirstOrDefaultAsync(a => a.ActivityID == request.ActivityID && a.OwnerID == userID);
+
+
+            //find group in db
+            //var group = await _context.Groups.Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+            if (activity == null)
+                return BadRequest("No such activity or no access. ");
+
+
+
+
+            //remove activity from group
+            _context.Activities.Remove(activity);
+            _context.SaveChangesAsync();
+
+            return Ok();
+        }
 
 
 
