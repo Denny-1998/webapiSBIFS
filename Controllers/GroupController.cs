@@ -201,7 +201,7 @@ namespace webapiSBIFS.Controllers
 
 
         [HttpPost("AddActivity"), Authorize(Roles = "user")]
-        public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDto request)
+        public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDtoUser request)
         {
 
             int userID = _userService.GetUserID();
@@ -211,6 +211,9 @@ namespace webapiSBIFS.Controllers
 
             if (group == null)
                 return BadRequest("No such group.");
+
+
+
 
 
 
@@ -230,10 +233,11 @@ namespace webapiSBIFS.Controllers
 
 
             //find user in db
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.OwnerEmail);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserID == userID);
 
             if (user == null)
                 return BadRequest("User does not exist. ");
+
 
             //for each user in request, check if it is in group
             foreach (string u in request.ParticipantsEmail)
@@ -247,7 +251,7 @@ namespace webapiSBIFS.Controllers
                 }
 
                 //if not, return
-                if (userInGroup)
+                if (!userInGroup)
                     return BadRequest($"At least one of the users is not participant of this group: \n{u}");
             }
 
