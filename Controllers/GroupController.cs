@@ -200,6 +200,8 @@ namespace webapiSBIFS.Controllers
 
 
 
+
+
         [HttpPost("AddActivity"), Authorize(Roles = "user")]
         public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDtoUser request)
         {
@@ -291,6 +293,82 @@ namespace webapiSBIFS.Controllers
 
             return Ok(group);
         }
+
+
+
+
+
+        [HttpPut("EditActivity"), Authorize(Roles = "user")]
+        public async Task<ActionResult> EditActivity(ActivityFullDtoUser request)
+        {
+            int userID = _userService.GetUserID();
+
+            //find activity and group in db
+            Activity activity = await _context.Activities.Include(a => a.Participants).FirstOrDefaultAsync(a => a.ActivityID == request.ActivityID);
+
+
+            Group group = await _context.Groups.Include(g => g.Participants).Include(g => g.Activities).FirstOrDefaultAsync(g => g.GroupID == request.GroupID);
+
+
+            //check if activity exists
+            if (activity == null)
+                return BadRequest("Activity not found. ");
+
+            //check if user is owner of this activity or owner of this group
+            //group owners can edit activities
+            if (activity.OwnerID != userID && group.OwnerID != userID)
+                return Forbid("You are not the owner of this activity or this group. ");
+
+
+
+
+            List<User> users = group.Participants;
+
+
+            //for each user in request, check if it is in group
+            foreach (string u in request.ParticipantsEmail)
+            {
+                //check if user is in group
+                bool userInGroup = false;
+                foreach (User groupParticipants in group.Participants)
+                {
+                    if (u == groupParticipants.Email)
+                        userInGroup = true;
+                }
+
+                //if not, return
+                if (userInGroup)
+                    return BadRequest($"At least one of the users is not participant of this group: \n{u}");
+            }
+
+
+
+
+
+
+            //convert user into string to avoid sending uneccessary information
+            List<User> Participants = new List<User>();
+            foreach (string email in request.ParticipantsEmail)
+            {
+                User u = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                Participants.Add(u);
+            }
+
+
+
+
+            //set all parameters
+            activity.Amount = request.Amount;
+            activity.Description = request.Description;
+            activity.Participants = Participants;
+            activity.Group = group;
+
+
+            _context.SaveChangesAsync();
+
+            return Ok(activity);
+        }
+
 
 
 
