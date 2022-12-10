@@ -97,10 +97,6 @@ namespace webapiSBIFS.Controllers
             }
 
 
-
-
-            
-
             return Ok(activities);
         }
 
