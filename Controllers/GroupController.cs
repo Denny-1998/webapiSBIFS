@@ -337,7 +337,7 @@ namespace webapiSBIFS.Controllers
                 }
 
                 //if not, return
-                if (userInGroup)
+                if (!userInGroup)
                     return BadRequest($"At least one of the users is not participant of this group: \n{u}");
             }
 
@@ -412,9 +412,8 @@ namespace webapiSBIFS.Controllers
 
             var group = await _context.Groups.Include(g => g.Activities).Include(g => g.Participants).
                 FirstOrDefaultAsync(g => g.GroupID == requested.GroupID && g.OwnerID == userID);
-            var activities = _context.Activities.Include(a => a.Participants).FirstOrDefault();
+            var activities = _context.Activities.Include(a => a.Participants).Where(a => a.Group.GroupID == group.GroupID);
 
-            
 
 
 
@@ -436,7 +435,7 @@ namespace webapiSBIFS.Controllers
             //calculate total amount for every user and every activity
             List<ActivityReceipt> activityReceipts = new List<ActivityReceipt>();
 
-            foreach (Activity a in group.Activities)
+            foreach (Activity a in activities)
             {
                 if (a.Participants.Count == 0)
                     return StatusCode(500, $"An error occured while deviding an activity: \nid: {a.ActivityID} \ndescription: {a.Description} \namount: {a.Amount}");
@@ -461,7 +460,7 @@ namespace webapiSBIFS.Controllers
 
 
             //finally delete group
-            Delete(requested);
+            _context.Groups.Remove(group);
             _context.SaveChangesAsync();
 
 

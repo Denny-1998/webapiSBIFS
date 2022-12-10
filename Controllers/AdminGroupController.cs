@@ -381,7 +381,7 @@ namespace webapiSBIFS.Controllers
                 }
 
                 //if not, return
-                if (userInGroup)
+                if (!userInGroup)
                     return BadRequest($"At least one of the users is not participant of this group: \n{u}");
             }
 
