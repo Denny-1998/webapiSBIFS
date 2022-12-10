@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using webapiSBIFS.DataTransferObjects;
 using webapiSBIFS.Model;
 using webapiSBIFS.Tools;
 
@@ -84,5 +85,16 @@ namespace webapiSBIFS.Controllers
 
             return NoContent();
         }
+
+
+
+        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
+        public async Task<ActionResult> CountUsers()
+        {
+            int count = await _context.Users.CountAsync();
+
+            return Ok(new { count });
+        }
+
     }
 }

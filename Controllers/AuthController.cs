@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using webapiSBIFS.DataTransferObjects;
 using webapiSBIFS.Tools;
+using static webapiSBIFS.Model.User;
 
 namespace webapiSBIFS.Controllers
 {
@@ -86,7 +88,11 @@ namespace webapiSBIFS.Controllers
 
 
             var jwt = JwtTools.CreateToken(user);
-            return Ok(new {jwt});
+            string role = user.Privilege.ToString();
+
+
+            
+            return Ok(new {jwt, role});
         }
     }
 }
