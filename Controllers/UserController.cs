@@ -34,7 +34,7 @@ namespace webapiSBIFS.Controllers
             return Ok(new { email });
         }
 
-        [HttpPut("Update"), Authorize(Roles = "admin, user")]
+        [HttpPut("Update"), Authorize(Roles = "user")]
         public async Task<ActionResult> Update(AuthDto request)
         {
             string hashedPass = string.Empty;
@@ -65,7 +65,7 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
-        [HttpDelete("Delete"), Authorize(Roles = "admin, user")]
+        [HttpDelete("Delete"), Authorize(Roles = "user")]
         public async Task<ActionResult> Delete()
         {
             int userID = _userService.GetUserID();
@@ -86,15 +86,6 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
-
-
-        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
-        public async Task<ActionResult> CountUsers()
-        {
-            int count = await _context.Users.CountAsync();
-
-            return Ok(new { count });
-        }
 
     }
 }
