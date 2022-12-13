@@ -35,7 +35,7 @@ namespace webapiSBIFS.Controllers
 
 
 
-        [HttpDelete("DeleteUser"), Authorize(Roles = "admin")]
+        [HttpPost("DeleteUser"), Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(UserDto userRequest)
         {
 

@@ -146,7 +146,7 @@ namespace webapiSBIFS.Controllers
 
 
 
-        [HttpDelete("Delete"), Authorize(Roles = "user")]
+        [HttpPost("Delete"), Authorize(Roles = "user")]
         public async Task<ActionResult> Delete(GroupDto requested) 
         {
             int userID = _userService.GetUserID();
@@ -374,7 +374,7 @@ namespace webapiSBIFS.Controllers
 
 
 
-        [HttpDelete("DeleteActivity"), Authorize(Roles = "user")]
+        [HttpPost("DeleteActivity"), Authorize(Roles = "user")]
         public async Task<ActionResult> DeleteActivity(ActivityDto request)
         {
             int userID = _userService.GetUserID();
@@ -404,7 +404,7 @@ namespace webapiSBIFS.Controllers
 
 
 
-        [HttpDelete("Close"), Authorize(Roles = "user")]
+        [HttpPost("Close"), Authorize(Roles = "user")]
         public async Task<ActionResult> CloseGroup(GroupDto requested)
         {
             int userID = _userService.GetUserID();

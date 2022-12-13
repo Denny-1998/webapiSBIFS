@@ -118,7 +118,7 @@ namespace webapiSBIFS.Controllers
         
 
 
-        [HttpDelete("DeleteGroup"), Authorize(Roles = "admin")]
+        [HttpPost("DeleteGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> Delete(GroupDto request)
         {
             Group? g = await _context.Groups.FindAsync(request.GroupID);
@@ -204,7 +204,7 @@ namespace webapiSBIFS.Controllers
         }
 
 
-        [HttpDelete("RemoveUserFromGroup"), Authorize(Roles = "admin")]
+        [HttpPost("RemoveUserFromGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> RemoveUserFromGroup(GroupUserDto request)
         {
             //find group in db

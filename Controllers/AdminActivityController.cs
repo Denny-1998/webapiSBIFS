@@ -228,7 +228,8 @@ namespace webapiSBIFS.Controllers
 
 
 
-        [HttpDelete("DeleteActivity"), Authorize(Roles = "admin")]
+        [
+            ("DeleteActivity"), Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteActivity(ActivityDto request)
         {
             //find group in db
