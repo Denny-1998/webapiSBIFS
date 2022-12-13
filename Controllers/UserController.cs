@@ -69,7 +69,7 @@ namespace webapiSBIFS.Controllers
         public async Task<ActionResult> Delete()
         {
             int userID = _userService.GetUserID();
-            var user = await _context.Users.FindAsync(userID);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserID == userID);
             if (user == null)
                 return BadRequest("No such user.");
 
