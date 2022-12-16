@@ -24,7 +24,11 @@ namespace webapiSBIFS.Controllers
 
         
 
-
+        /// <summary>
+        /// get all information about one group belonging to logged in user
+        /// </summary>
+        /// <param name="requested"></param>
+        /// <returns></returns>
         [HttpPost("ReadOne"), Authorize(Roles = "user")]                                             //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
@@ -41,6 +45,10 @@ namespace webapiSBIFS.Controllers
         }
 
 
+        /// <summary>
+        /// list all groups with information belonging to one user
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("ReadMany"), Authorize(Roles = "user")]                                           //TODO change to get later
         public async Task<ActionResult<List<Group>>> Get()
         {
@@ -58,7 +66,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// listing all activities in a given group 
+        /// checks if group belongs to logged in user
+        /// </summary>
+        /// <param name="requested"></param>
+        /// <returns></returns>
         [HttpPost("GetActivities"), Authorize(Roles = "user")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> GetActivities(GroupDto requested)
         {
@@ -120,7 +133,10 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// create a new group with the logged in user as owner
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("Create"), Authorize(Roles = "user")]
         public async Task<ActionResult<List<Group>>> Create()
         {
@@ -145,7 +161,11 @@ namespace webapiSBIFS.Controllers
         }
 
 
-
+        /// <summary>
+        /// deletes one group belonging to the logged in user
+        /// </summary>
+        /// <param name="requested"></param>
+        /// <returns></returns>
         [HttpPost("Delete"), Authorize(Roles = "user")]
         public async Task<ActionResult> Delete(GroupDto requested) 
         {
@@ -162,7 +182,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// adds another participant to a group
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("AddUser"), Authorize(Roles = "user")]
         public async Task<ActionResult<List<User>>> AddUser(GroupUserDto request)
         {
@@ -201,7 +225,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// adds an activity to a group
+        /// available for users who own the group or who are participants in the group
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("AddActivity"), Authorize(Roles = "user")]
         public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDtoUser request)
         {
@@ -297,7 +326,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// edit one activity 
+        /// only if you are the owner
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut("EditActivity"), Authorize(Roles = "user")]
         public async Task<ActionResult> EditActivity(ActivityFullDtoUser request)
         {
@@ -373,7 +407,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// delete one activity 
+        /// only if you are owner of this activity
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("DeleteActivity"), Authorize(Roles = "user")]
         public async Task<ActionResult> DeleteActivity(ActivityDto request)
         {
@@ -403,7 +442,14 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// close a group and calculate the total for each user and each activity 
+        /// </summary>
+        /// <param name="requested"></param>
+        /// <returns>
+        /// returns a list of activities with amounts each user has to pay and 
+        /// then a total for each user as a list
+        /// </returns>
         [HttpPost("Close"), Authorize(Roles = "user")]
         public async Task<ActionResult> CloseGroup(GroupDto requested)
         {

@@ -34,7 +34,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// deletes one user by the email
+        /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
         [HttpPost("DeleteUser"), Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(UserDto userRequest)
         {
@@ -61,7 +65,10 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// counts all users including admins in the db to display them in statistics in the admin panel 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("CountUsers")]
         public async Task<ActionResult> CountUsers()
         {
