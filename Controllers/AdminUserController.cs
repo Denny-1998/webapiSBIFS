@@ -34,21 +34,27 @@ namespace webapiSBIFS.Controllers
 
 
 
-
-        [HttpDelete("DeleteUser"), Authorize(Roles = "admin")]
+        /// <summary>
+        /// deletes one user by the email
+        /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
+        [HttpPost("DeleteUser"), Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(UserDto userRequest)
         {
 
-            var user = await _context.Users.FindAsync(userRequest.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userRequest.Email);
             if (user == null)
                 return BadRequest("No such user.");
 
+            
             List<Group> groups = await _context.Groups.Where(g => g.OwnerID == user.UserID).ToListAsync();
 
             foreach (Group group in groups)
             {
                 _context.Groups.Remove(group);
             }
+            
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -59,8 +65,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
-        [HttpGet("CountUsers"), Authorize(Roles = "admin")]
+        /// <summary>
+        /// counts all users including admins in the db to display them in statistics in the admin panel 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("CountUsers")]
         public async Task<ActionResult> CountUsers()
         {
             int count = await _context.Users.CountAsync();

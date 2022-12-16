@@ -35,7 +35,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// this method lists all activities in a group
+        /// </summary>
+        /// <param name="requested"></param>
+        /// <returns></returns>
         [HttpPost("GetActivities"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> GetActivities(GroupDto requested)
         {
@@ -79,7 +83,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// adds an activity to a group
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("AddActivity"), Authorize(Roles = "admin")]
         public async Task<ActionResult<List<User>>> AddActivity(GroupActivityDto request)
         {
@@ -152,6 +160,11 @@ namespace webapiSBIFS.Controllers
 
 
 
+        /// <summary>
+        /// takes all information for an activity and replaces the one with the same ID
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut("EditActivity"), Authorize(Roles = "admin")]
         public async Task<ActionResult> EditActivity(ActivityFullDto request)
         {
@@ -227,8 +240,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
-        [HttpDelete("DeleteActivity"), Authorize(Roles = "admin")]
+        /// <summary>
+        /// deletes an activity
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("DeleteActivity"), Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteActivity(ActivityDto request)
         {
             //find group in db

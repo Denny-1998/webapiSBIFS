@@ -20,6 +20,10 @@ namespace webapiSBIFS.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// get the email address for the logged in user
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("Read"), Authorize(Roles = "admin, user")]
         public async Task<ActionResult<object>> Get()
         {
@@ -34,6 +38,11 @@ namespace webapiSBIFS.Controllers
             return Ok(new { email });
         }
 
+        /// <summary>
+        /// edit the logged in user (change email or password)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut("Update"), Authorize(Roles = "user")]
         public async Task<ActionResult> Update(AuthDto request)
         {
@@ -65,11 +74,16 @@ namespace webapiSBIFS.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// delete own user account
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete("Delete"), Authorize(Roles = "user")]
         public async Task<ActionResult> Delete()
         {
             int userID = _userService.GetUserID();
-            var user = await _context.Users.FindAsync(userID);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserID == userID);
             if (user == null)
                 return BadRequest("No such user.");
 

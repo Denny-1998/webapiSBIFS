@@ -33,7 +33,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// method for ifnding all information for one group 
+        ///  </summary>
+        /// <param name="requested"></param>
+        /// <returns>all information including participants and activities</returns>
         [HttpPost("ReadOneGroup"), Authorize(Roles = "admin")]                                               //TODO change to get later
         public async Task<ActionResult<Group>> Get(GroupDto requested)
         {
@@ -47,7 +51,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-        
+        /// <summary>
+        /// method for listing all information fro all groups belonging to a given user 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>returns a very long list of groups with information</returns>
         [HttpPost("ReadManyGroups"), Authorize(Roles = "admin")]                                              //TODO change to get later 
         public async Task<ActionResult<List<Group>>> Get(UserDto request)
         {
@@ -61,7 +69,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// creates a new group with participants 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("CreateGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult<List<Group>>> Create(UserDto request)
         {
@@ -83,7 +95,11 @@ namespace webapiSBIFS.Controllers
 
 
         
-
+        /// <summary>
+        /// replaces the group with the same ID with new information
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut("EditGroup"), Authorize(Roles ="admin")]
         public async Task<ActionResult<List<Group>>> Edit(GroupFullDto request)
         {
@@ -117,8 +133,12 @@ namespace webapiSBIFS.Controllers
 
         
 
-
-        [HttpDelete("DeleteGroup"), Authorize(Roles = "admin")]
+        /// <summary>
+        /// deletes one group
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("DeleteGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> Delete(GroupDto request)
         {
             Group? g = await _context.Groups.FindAsync(request.GroupID);
@@ -204,7 +224,7 @@ namespace webapiSBIFS.Controllers
         }
 
 
-        [HttpDelete("RemoveUserFromGroup"), Authorize(Roles = "admin")]
+        [HttpPost("RemoveUserFromGroup"), Authorize(Roles = "admin")]
         public async Task<ActionResult> RemoveUserFromGroup(GroupUserDto request)
         {
             //find group in db

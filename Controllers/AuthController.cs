@@ -44,7 +44,12 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// method for creating a new user 
+        /// creating an admin is not possible yet, this has to be changed through MS SQL server management studio
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public async Task<ActionResult> Register(AuthDto request)
         {
@@ -72,7 +77,11 @@ namespace webapiSBIFS.Controllers
 
 
 
-
+        /// <summary>
+        /// method for login, checks if username exists and password is right and returns a jwt token 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("Login")]
         public async Task<ActionResult<object>> Login(AuthDto request)
         {
